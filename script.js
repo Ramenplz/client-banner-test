@@ -1,6 +1,6 @@
 // API key และ URL สำหรับดึงแบนเนอร์
 const API_KEY = 'c15d4d99f487a84834bcf633521d40ca';
-const BANNER_API_URL = 'http://www.ramenplzbanner.space/api/get_banners.php'; // เปลี่ยนเป็น URL จริงของ API
+const BANNER_API_URL = 'https://www.ramenplzbanner.space/api/get_banners.php'; // เปลี่ยนเป็น HTTPS
 
 // ตัวแปรสำหรับ Carousel
 let currentSlide = 0;
@@ -17,30 +17,38 @@ const dotsContainer = document.querySelector('.carousel-dots');
 async function fetchBanners() {
     try {
         const response = await fetch(BANNER_API_URL, {
+            method: 'GET',
             headers: {
-                'Authorization': `Bearer ${API_KEY}`
-            }
+                'X-API-Key': API_KEY,
+                'Accept': 'application/json'
+            },
+            mode: 'cors'
         });
 
         if (!response.ok) {
-            throw new Error('ไม่สามารถดึงข้อมูลแบนเนอร์ได้');
+            throw new Error('ไม่สามารถดึงข้อมูลแบนเนอร์ได้: ' + response.status);
         }
 
         const data = await response.json();
-        banners = data.banners || [];
+
+        if (data.success) {
+            banners = data.data || [];
+        } else {
+            banners = [];
+        }
 
         if (banners.length > 0) {
             renderCarousel();
             startAutoSlide();
         } else {
             // หากไม่มีแบนเนอร์ ให้ใช้ภาพเริ่มต้น
-            banners = [{ imageUrl: 'https://via.placeholder.com/1200x400', alt: 'แบนเนอร์เริ่มต้น' }];
+            banners = [{ imageUrl: 'https://via.placeholder.com/1200x400', alt: 'แบนเนอร์เริ่มต้น', targetUrl: '#' }];
             renderCarousel();
         }
     } catch (error) {
         console.error('เกิดข้อผิดพลาด:', error);
         // ใช้แบนเนอร์เริ่มต้นหากดึงข้อมูลไม่สำเร็จ
-        banners = [{ imageUrl: 'https://via.placeholder.com/1200x400', alt: 'แบนเนอร์เริ่มต้น' }];
+        banners = [{ imageUrl: 'https://via.placeholder.com/1200x400', alt: 'แบนเนอร์เริ่มต้น', targetUrl: '#' }];
         renderCarousel();
     }
 }
@@ -56,7 +64,21 @@ function renderCarousel() {
         // สร้างสไลด์
         const slide = document.createElement('div');
         slide.className = 'carousel-slide';
-        slide.innerHTML = `<img src="${banner.imageUrl}" alt="${banner.alt || 'แบนเนอร์'}">`;
+
+        // สร้างลิงก์สำหรับแบนเนอร์
+        const link = document.createElement('a');
+        link.href = banner.targetUrl || '#';
+        link.target = '_blank';
+
+        const image = document.createElement('img');
+        image.src = banner.imageUrl;
+        image.alt = banner.alt || banner.title || 'แบนเนอร์';
+        image.onerror = function() {
+            this.src = 'https://via.placeholder.com/1200x400';
+        };
+
+        link.appendChild(image);
+        slide.appendChild(link);
         carousel.appendChild(slide);
 
         // สร้างจุดนำทาง
@@ -125,7 +147,12 @@ nextButton.addEventListener('click', () => {
 });
 
 // ดึงแบนเนอร์เมื่อโหลดหน้าเว็บ
-window.addEventListener('DOMContentLoaded', fetchBanners);
+document.addEventListener('DOMContentLoaded', () => {
+    // ตรวจสอบว่า elements มีอยู่ในหน้า
+    if (carousel && prevButton && nextButton && dotsContainer) {
+        fetchBanners();
+    }
+});
 
 // อัพเดทแบนเนอร์ทุก 1 นาที
 setInterval(fetchBanners, 60 * 1000);

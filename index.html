@@ -1,17 +1,87 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="th">
 
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>เว็บไซต์แบนเนอร์</title>
     <link rel="stylesheet" href="style.css">
+    <style>
+        /* สไตล์สำหรับ Carousel */
+        
+        .carousel-container {
+            position: relative;
+            width: 100%;
+            max-width: 1200px;
+            margin: 0 auto;
+            overflow: hidden;
+        }
+        
+        .carousel {
+            display: flex;
+            transition: transform 0.5s ease;
+        }
+        
+        .carousel-slide {
+            min-width: 100%;
+            box-sizing: border-box;
+        }
+        
+        .carousel-slide img {
+            width: 100%;
+            height: auto;
+            display: block;
+        }
+        
+        .carousel-controls {
+            position: absolute;
+            top: 50%;
+            width: 100%;
+            display: flex;
+            justify-content: space-between;
+            transform: translateY(-50%);
+        }
+        
+        .carousel-controls button {
+            background: rgba(0, 0, 0, 0.5);
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            cursor: pointer;
+            font-size: 18px;
+        }
+        
+        .carousel-dots {
+            display: flex;
+            justify-content: center;
+            margin-top: 10px;
+        }
+        
+        .carousel-dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: #ccc;
+            margin: 0 5px;
+            border: none;
+            cursor: pointer;
+        }
+        
+        .carousel-dot.active {
+            background: #333;
+        }
+    </style>
 </head>
 
 <body>
     <header>
-        <div class="banner-container">
-            <img id="banner-image" src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSYZ3QregeP3qyTyv4d0GMjy8ZH5Xkqpj5tug&s" alt="แบนเนอร์เว็บไซต์">
+        <div class="carousel-container">
+            <div class="carousel"></div>
+            <div class="carousel-controls">
+                <button class="prev">&lt;</button>
+                <button class="next">&gt;</button>
+            </div>
+            <div class="carousel-dots"></div>
         </div>
     </header>
 
