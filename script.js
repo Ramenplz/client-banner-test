@@ -1,6 +1,6 @@
 // API key และ URL สำหรับดึงแบนเนอร์
 const API_KEY = 'c15d4d99f487a84834bcf633521d40ca';
-const BANNER_API_URL = 'https://www.ramenplzbanner.space/api/get_banners.php'; // เปลี่ยนเป็น HTTPS
+const BANNER_API_URL = 'https://www.ramenplzbanner.space//api/get_banners.php'; // เปลี่ยนเป็น HTTPS
 
 // ตัวแปรสำหรับ Carousel
 let currentSlide = 0;
